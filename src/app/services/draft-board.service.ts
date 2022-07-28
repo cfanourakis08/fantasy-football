@@ -6,25 +6,25 @@ import { Team } from '../models/team.model';
   providedIn: 'root'
 })
 export class DraftBoardService {
-  draftBoard: Array<DraftPick> = [];
+  private _draftBoard: Array<DraftPick> = [];
+  private _teamDetails: Array<Team> = [];
 
   constructor() { }
 
   draftPlayer(draftPick: DraftPick) {
     let pickIndex = draftPick.pick - 1;
-    this.draftBoard[pickIndex] = draftPick;
+    this._draftBoard[pickIndex] = draftPick;
   }
 
   createDraftBoard(userList: Array<Team>, roundCount: number) {
-    this.draftBoard = Array(userList.length * roundCount);
+    this._draftBoard = Array(userList.length * roundCount);
+    this._teamDetails = userList;
     userList.forEach(user => {
       user.picks.forEach(pick => {
         let pickIndex = pick - 1;
-        this.draftBoard[pickIndex] = this.extractTeamInfo(user, pick);
+        this._draftBoard[pickIndex] = this.extractTeamInfo(user, pick);
       })
     });
-
-    console.log(this.draftBoard);
   }
 
   private extractTeamInfo(user: Team, pick: number): DraftPick {
@@ -32,5 +32,13 @@ export class DraftBoardService {
       pick,
       teamName: user.name
     }
+  }
+
+  get draftBoard(): Array<DraftPick> {
+    return this._draftBoard;
+  }
+  
+  get teamDetails(): Array<Team> {
+    return this._teamDetails;
   }
 }

@@ -1,0 +1,13 @@
+<form [formGroup]="form">
+    <select formControlName="team" (change)="getPositionLength()">
+        <option *ngFor="let team of getTeamList()" value="{{team.name}}">{{team.name}}</option>
+    </select>
+</form>
+<p>QB: {{qbListLength}}/2</p>
+<p>RB: {{rbListLength}}/6</p>
+<p>WR: {{wrListLength}}/6</p>
+<p>TE: {{teListLength}}/2</p>
+<p>DST: {{dstListLength}}/1</p>
+<p>K: {{kListLength}}/1</p>
+
+

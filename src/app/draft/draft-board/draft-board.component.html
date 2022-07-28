@@ -1,1 +1,20 @@
-<p>draft-board works!</p>
+<table>
+    <thead>
+        <tr>
+            <th>Pick</th>
+            <th>Fantasy Team</th>
+            <th>Player</th>
+            <th>Position</th>
+            <th>Team</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of draftBoard">
+            <td>{{row.pick}}</td>
+            <td>{{row.teamName}}</td>
+            <td>{{row.playerName}}</td>
+            <td>{{row.position}}</td>
+            <td>{{row.playerTeam}}</td>
+        </tr>
+    </tbody>
+</table>

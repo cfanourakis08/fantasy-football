@@ -1,0 +1,8 @@
+.row, .col, .col-2, .col-10 {
+    border: 1px;
+    border-color: black;
+}
+
+div {
+    border: 1px;
+}

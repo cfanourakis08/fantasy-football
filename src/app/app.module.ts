@@ -9,6 +9,7 @@ import { PreDraftFormComponent } from './pre-draft-form/pre-draft-form.component
 import { DraftComponent } from './draft/draft.component';
 import { DraftBoardComponent } from './draft/draft-board/draft-board.component';
 import { AvailablePlayersComponent } from './draft/available-players/available-players.component';
+import { TeamBreakdownComponent } from './draft/team-breakdown/team-breakdown.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { AvailablePlayersComponent } from './draft/available-players/available-p
     PreDraftFormComponent,
     DraftComponent,
     DraftBoardComponent,
-    AvailablePlayersComponent
+    AvailablePlayersComponent,
+    TeamBreakdownComponent
   ],
   imports: [
     BrowserModule,

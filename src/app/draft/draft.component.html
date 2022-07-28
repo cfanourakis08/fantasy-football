@@ -1,1 +1,26 @@
-<p>draft works!</p>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <h1>PICK #{{currentPick}}</h1>
+        </div>
+        <div class="col-8">
+            <h1>ON THE CLOCK: {{currentTeam}}</h1>
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary" (click)="updatePickHeader()">SELECT PLAYER</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" style="background-color:blue">
+            Column
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2" style="background-color:grey">
+            <app-team-breakdown></app-team-breakdown>
+        </div>
+        <div class="col-10" style="background-color:rebeccapurple">
+            <app-draft-board></app-draft-board>
+        </div>
+    </div>
+</div>
