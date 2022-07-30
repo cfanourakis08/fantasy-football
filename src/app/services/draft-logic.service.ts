@@ -107,9 +107,8 @@ export class DraftLogicService {
     else {
       currentIndex = 0;
     }
-
-    if (currentIndex > this.draftBoard.teamDetails[index].picks.length) {
-      return this.draftBoard.draftBoard.length + 1;
+    if (currentIndex >= this.draftBoard.teamDetails[index].picks.length) {
+      return this.draftBoard.draftBoard.length;
     }
 
     return this.draftBoard.teamDetails[index].picks[currentIndex]

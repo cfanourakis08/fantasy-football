@@ -53,10 +53,12 @@ export class BestChoicesComponent implements OnInit {
       return pick == currentPick
     });
 
-    if (currentIndex + 1 >= this.draftBoard.teamDetails[index].picks.length) {
-      return this.draftBoard.draftBoard.length;
-    }
+    console.log(currentIndex);
 
+    if (currentIndex + 1 >= this.draftBoard.teamDetails[index].picks.length) {
+      let draftBoard = this.draftBoard.draftBoard;
+      return draftBoard.length;
+    }
     return this.draftBoard.teamDetails[index].picks[currentIndex + 1]
   }
 
