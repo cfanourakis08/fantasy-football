@@ -54,7 +54,7 @@ export class BestChoicesComponent implements OnInit {
     });
 
     if (currentIndex + 1 >= this.draftBoard.teamDetails[index].picks.length) {
-      return this.draftBoard.draftBoard.length + 1;
+      return this.draftBoard.draftBoard.length;
     }
 
     return this.draftBoard.teamDetails[index].picks[currentIndex + 1]
@@ -103,6 +103,16 @@ export class BestChoicesComponent implements OnInit {
     this.teList.sort(sorter);
     this.dstList.sort(this.starterSort);
     this.kList.sort(this.starterSort);
+  }
+
+  adpSort(a: any, b: any) {
+    if ( a.vor < b.vor ){
+      return 1;
+    }
+    if ( a.vor > b.vor ){
+      return -1;
+    }
+    return 0;
   }
 
   private starterSort(a: any, b: any) {

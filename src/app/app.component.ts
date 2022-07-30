@@ -58,12 +58,22 @@ export class AppComponent {
   private createDstList() {
     this.draft.dstPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'DST';
+    });
+
+    this.draft.dstPlayerDataList.forEach(row => {
+      row.adp = 141;
     })
   }
 
   private createKList() {
     this.draft.kPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'K';
+    })
+
+    this.draft.kPlayerDataList.forEach(row => {
+      if (row.adp.toString() == 'NaN') {
+        row.adp = 141;
+      }
     })
   }
 

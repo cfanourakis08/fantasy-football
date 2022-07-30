@@ -22,7 +22,7 @@ export class DraftComponent implements OnInit {
     playerName: new FormControl()
   })
 
-  constructor(private draftBoardService: DraftBoardService,
+  constructor(public draftBoardService: DraftBoardService,
               private fb: FormBuilder,
               public draft: DraftLogicService) { 
                 this.form = this.fb.group({
@@ -33,6 +33,10 @@ export class DraftComponent implements OnInit {
   ngOnInit(): void {
     const round = Math.ceil(this.currentPick / this.draftBoardService.teamDetails.length)
     this.draft.calculateBestChoice(this.currentPick, round);
+  }
+
+  getRound(): number {
+    return Math.ceil(this.currentPick / this.draftBoardService.teamDetails.length)
   }
 
   selectPlayer(): void {

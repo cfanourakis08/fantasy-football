@@ -1,4 +1,20 @@
-<table>
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <td>Player</td>
+            <td>Position</td>
+            <td>VOR</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of [draft.qbList[0], draft.rbList[0], draft.wrList[0], draft.teList[0], draft.dstList[0], draft.kList[0]].sort(adpSort)">
+            <td>{{row?.name}}</td>
+            <td>{{row?.position}}</td>
+            <td>{{row?.vor}}</td>
+        </tr>
+    </tbody>
+</table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -10,11 +26,11 @@
         <tr *ngFor="let row of draft.qbList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ??  (row.starterValue - draft.qbList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -26,11 +42,11 @@
         <tr *ngFor="let row of draft.rbList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ?? (row.starterValue - draft.rbList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -42,11 +58,11 @@
         <tr *ngFor="let row of draft.wrList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ?? (row.starterValue - draft.wrList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -58,11 +74,11 @@
         <tr *ngFor="let row of draft.teList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ?? (row.starterValue - draft.teList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -74,11 +90,11 @@
         <tr *ngFor="let row of draft.dstList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ?? (row.starterValue - draft.dstList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table>
+<table class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
@@ -90,7 +106,7 @@
         <tr *ngFor="let row of draft.kList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
-            <td>{{row.vor}}</td>
+            <td>{{row.vor ?? (row.starterValue - draft.kList[0].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>

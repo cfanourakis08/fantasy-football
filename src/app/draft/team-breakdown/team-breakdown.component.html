@@ -4,10 +4,58 @@
     </select>
 </form>
 <p>QB: {{draftBoardService.teamDetails[index].qbList?.length ?? 0}}/2</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].qbList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 <p>RB: {{draftBoardService.teamDetails[index].rbList?.length ?? 0}}/6</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].rbList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 <p>WR: {{draftBoardService.teamDetails[index].wrList?.length ?? 0}}/6</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].wrList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 <p>TE: {{draftBoardService.teamDetails[index].teList?.length ?? 0}}/2</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].teList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 <p>DST: {{draftBoardService.teamDetails[index].dstList?.length ?? 0}}/1</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].dstList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 <p>K: {{draftBoardService.teamDetails[index].kList?.length ?? 0}}/1</p>
+<table class="table table-sm table-striped">
+    <tbody>
+        <tr *ngFor="let row of draftBoardService.teamDetails[index].kList">
+            <td>{{row.name}}</td>
+            <td>{{row.team}}</td>
+        </tr>
+    </tbody>
+</table>
 
 
