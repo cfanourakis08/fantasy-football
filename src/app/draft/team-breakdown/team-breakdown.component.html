@@ -1,13 +1,13 @@
 <form [formGroup]="form">
-    <select formControlName="team" (change)="getPositionLength()">
+    <select formControlName="team" (change)="getTeamIndex()">
         <option *ngFor="let team of getTeamList()" value="{{team.name}}">{{team.name}}</option>
     </select>
 </form>
-<p>QB: {{qbListLength}}/2</p>
-<p>RB: {{rbListLength}}/6</p>
-<p>WR: {{wrListLength}}/6</p>
-<p>TE: {{teListLength}}/2</p>
-<p>DST: {{dstListLength}}/1</p>
-<p>K: {{kListLength}}/1</p>
+<p>QB: {{draftBoardService.teamDetails[index].qbList?.length ?? 0}}/2</p>
+<p>RB: {{draftBoardService.teamDetails[index].rbList?.length ?? 0}}/6</p>
+<p>WR: {{draftBoardService.teamDetails[index].wrList?.length ?? 0}}/6</p>
+<p>TE: {{draftBoardService.teamDetails[index].teList?.length ?? 0}}/2</p>
+<p>DST: {{draftBoardService.teamDetails[index].dstList?.length ?? 0}}/1</p>
+<p>K: {{draftBoardService.teamDetails[index].kList?.length ?? 0}}/1</p>
 
 

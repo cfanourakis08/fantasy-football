@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DraftPick } from '../models/draftboard.model';
+import { Player } from '../models/player.model';
 import { Team } from '../models/team.model';
 
 @Injectable({
@@ -7,7 +8,7 @@ import { Team } from '../models/team.model';
 })
 export class DraftBoardService {
   private _draftBoard: Array<DraftPick> = [];
-  private _teamDetails: Array<Team> = [];
+  teamDetails: Array<Team> = [];
 
   constructor() { }
 
@@ -18,13 +19,21 @@ export class DraftBoardService {
 
   createDraftBoard(userList: Array<Team>, roundCount: number) {
     this._draftBoard = Array(userList.length * roundCount);
-    this._teamDetails = userList;
+    this.teamDetails = userList;
     userList.forEach(user => {
       user.picks.forEach(pick => {
         let pickIndex = pick - 1;
         this._draftBoard[pickIndex] = this.extractTeamInfo(user, pick);
       })
     });
+  }
+
+  updateDraftBoard(i: number, player: Player, userName: string): void {
+    this._draftBoard[i].playerId = player.id.toString();
+    this._draftBoard[i].playerName = player.name;
+    this._draftBoard[i].playerTeam = player.team;
+    this._draftBoard[i].position = player.position;
+    this._draftBoard[i].teamName = userName;
   }
 
   private extractTeamInfo(user: Team, pick: number): DraftPick {
@@ -36,9 +45,5 @@ export class DraftBoardService {
 
   get draftBoard(): Array<DraftPick> {
     return this._draftBoard;
-  }
-  
-  get teamDetails(): Array<Team> {
-    return this._teamDetails;
   }
 }

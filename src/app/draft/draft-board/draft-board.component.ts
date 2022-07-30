@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DraftPick } from 'src/app/models/draftboard.model';
+import { Player } from 'src/app/models/player.model';
 import { DraftBoardService } from 'src/app/services/draft-board.service';
 
 @Component({

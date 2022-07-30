@@ -10,6 +10,7 @@ import { DraftComponent } from './draft/draft.component';
 import { DraftBoardComponent } from './draft/draft-board/draft-board.component';
 import { AvailablePlayersComponent } from './draft/available-players/available-players.component';
 import { TeamBreakdownComponent } from './draft/team-breakdown/team-breakdown.component';
+import { BestChoicesComponent } from './draft/best-choices/best-choices.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { TeamBreakdownComponent } from './draft/team-breakdown/team-breakdown.co
     DraftComponent,
     DraftBoardComponent,
     AvailablePlayersComponent,
-    TeamBreakdownComponent
+    TeamBreakdownComponent,
+    BestChoicesComponent
   ],
   imports: [
     BrowserModule,

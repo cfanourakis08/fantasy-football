@@ -1,26 +1,71 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
+            <!--NOTE: Basically Done. Need to Style-->
             <h1>PICK #{{currentPick}}</h1>
         </div>
         <div class="col-8">
+            <!--NOTE: Basically Done. Need to Style-->
             <h1>ON THE CLOCK: {{currentTeam}}</h1>
         </div>
         <div class="col-2">
-            <button type="submit" class="btn btn-primary" (click)="updatePickHeader()">SELECT PLAYER</button>
+            <!--TODO: Create modal which picks player-->
+            <!--NOTE: Basically Done. Need to Style-->
+            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">SELECT PLAYER</button>
         </div>
     </div>
     <div class="row">
         <div class="col" style="background-color:blue">
+            <!--TODO: Create component which will display player information-->
             Column
         </div>
     </div>
     <div class="row">
         <div class="col-2" style="background-color:grey">
+            <!--TODO: Need to Style-->
             <app-team-breakdown></app-team-breakdown>
         </div>
         <div class="col-10" style="background-color:rebeccapurple">
-            <app-draft-board></app-draft-board>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a id="draft-board" class="nav-link active" aria-current="page" href="javascript:void(0)" (click)="navigateTab('draft-board')">Draft Board</a>
+                </li>
+                <li class="nav-item">
+                  <a id="remaining-players" class="nav-link" href="javascript:void(0)" (click)="navigateTab('remaining-players')">Remaining Players</a>
+                </li>
+                <li class="nav-item">
+                  <a id="best-choices" class="nav-link" href="javascript:void(0)" (click)="navigateTab('best-choices')">My Best Choices</a>
+                </li>
+              </ul>
+            <!--TODO: Need to style-->
+            <app-draft-board *ngIf="showDraftBoard"></app-draft-board>
+            <!--TODO: Need to style-->
+            <app-available-players *ngIf="showAvailablePlayers"></app-available-players>
+            <!--TODO: Need to create component which will show the top player at each position at which I should choose-->
+            <app-best-choices *ngIf="showMyBestChoices"></app-best-choices>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" id="myModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Draft Player</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form [formGroup]="form">
+                <div class="modal-body">
+                    <select formControlName="playerName">
+                        <option *ngFor="let player of draft.availablePlayerDataList">{{player.name}}</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="selectPlayer()">Select Player</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
+

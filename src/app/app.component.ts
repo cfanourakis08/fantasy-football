@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AvailablePlayersComponent } from './draft/available-players/available-players.component';
 import { Player } from './models/player.model';
+import { DraftLogicService } from './services/draft-logic.service';
 import { ExcelService } from './services/excel.service';
 
 @Component({
@@ -9,19 +11,13 @@ import { ExcelService } from './services/excel.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  allPlayerDataList: Array<Player> = [];
-  qbPlayerDataList: Array<Player> = [];
-  rbPlayerDataList: Array<Player> = [];
-  wrPlayerDataList: Array<Player> = [];
-  tePlayerDataList: Array<Player> = [];
-  dstPlayerDataList: Array<Player> = [];
-  kPlayerDataList: Array<Player> = [];
 
   constructor(private excelService: ExcelService,
+              private draft: DraftLogicService,
               private route: Router) { }
 
   async ngOnInit() {
-    this.allPlayerDataList = await this.excelService.getFileContents();
+    this.draft.availablePlayerDataList = await this.excelService.getFileContents();
     this.createPositionList();
     this.route.navigate(['pre-draft']);
   }
@@ -36,37 +32,37 @@ export class AppComponent {
   }
 
   private createQbList() {
-    this.qbPlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.qbPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'QB';
     })
   }
 
   private createRbList() {
-    this.rbPlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.rbPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'RB';
     })
   }
 
   private createWrList() {
-    this.wrPlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.wrPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'WR';
     })
   }
 
   private createTeList() {
-    this.tePlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.tePlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'TE';
     })
   }
 
   private createDstList() {
-    this.dstPlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.dstPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'DST';
     })
   }
 
   private createKList() {
-    this.kPlayerDataList = this.allPlayerDataList.filter(player => {
+    this.draft.kPlayerDataList = this.draft.availablePlayerDataList.filter(player => {
       return player.position == 'K';
     })
   }

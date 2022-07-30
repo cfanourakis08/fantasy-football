@@ -10,18 +10,13 @@ import { DraftBoardService } from 'src/app/services/draft-board.service';
   styleUrls: ['./team-breakdown.component.css']
 })
 export class TeamBreakdownComponent implements OnInit {
-  qbListLength: number = 0;
-  rbListLength: number = 0;
-  wrListLength: number = 0;
-  teListLength: number = 0;
-  dstListLength: number = 0;
-  kListLength: number = 0;
+  index: number = 0;
 
   form = new FormGroup({
     team: new FormControl()
   })
 
-  constructor(private draftBoardService: DraftBoardService,
+  constructor(public draftBoardService: DraftBoardService,
               private fb: FormBuilder) { 
                 this.form = this.fb.group({
                   team: ['', [Validators.required]]
@@ -35,14 +30,10 @@ export class TeamBreakdownComponent implements OnInit {
     return this.draftBoardService.teamDetails
   }
 
-  getPositionLength(): void {
-    const teamInfo = this.getTeamInfo();
-    this.qbListLength = teamInfo?.qbList?.length || 0;
-    this.rbListLength = teamInfo?.rbList?.length || 0;
-    this.wrListLength = teamInfo?.wrList?.length || 0;
-    this.teListLength = teamInfo?.teList?.length || 0;
-    this.dstListLength = teamInfo?.dstList?.length || 0;
-    this.kListLength = teamInfo?.kList?.length || 0;
+  getTeamIndex(): void {
+    this.index = this.draftBoardService.teamDetails.findIndex(team => {
+      return team.name == this.team
+    });
   }
 
   private getTeamInfo(): Team {
