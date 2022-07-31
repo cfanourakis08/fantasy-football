@@ -9,4 +9,5 @@ export interface Team {
     teList?: Array<Player>,
     dstList?: Array<Player>,
     kList?: Array<Player>
+    teams?: Array<string>
 }

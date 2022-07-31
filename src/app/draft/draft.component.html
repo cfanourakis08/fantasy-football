@@ -1,31 +1,20 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
-            <!--NOTE: Basically Done. Need to Style-->
             <h1>ROUND: <span style="font-weight: bold">{{getRound()}}</span></h1>
             <h1>PICK: <span style="font-weight: bold">{{currentPick}}</span></h1>
         </div>
         <div id="on-the-clock" class="col-6">
-            <!--NOTE: Basically Done. Need to Style-->
             <h1>ON THE CLOCK: <span style="font-weight: bold">{{currentTeam}}</span></h1>
         </div>
         <div class="col-2">
-            <!--TODO: Create modal which picks player-->
-            <!--NOTE: Basically Done. Need to Style-->
             <div class="container">
               <button type="submit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">SELECT PLAYER</button>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col">
-            <!--TODO: Create component which will display player information-->
-            Column
-        </div>
-    </div>
-    <div class="row">
         <div class="col-2">
-            <!--TODO: Need to Style-->
             <app-team-breakdown></app-team-breakdown>
         </div>
         <div class="col-10">
@@ -40,11 +29,8 @@
                   <a id="best-choices" class="nav-link" href="javascript:void(0)" (click)="navigateTab('best-choices')">My Best Choices</a>
                 </li>
               </ul>
-            <!--TODO: Need to style-->
             <app-draft-board *ngIf="showDraftBoard"></app-draft-board>
-            <!--TODO: Need to style-->
             <app-available-players *ngIf="showAvailablePlayers"></app-available-players>
-            <!--TODO: Need to create component which will show the top player at each position at which I should choose-->
             <app-best-choices *ngIf="showMyBestChoices"></app-best-choices>
         </div>
     </div>

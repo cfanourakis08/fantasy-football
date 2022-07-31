@@ -65,6 +65,12 @@ export class DraftComponent implements OnInit {
   }
 
   private addByPosition(i: number, player: Player): void {
+    if (this.draftBoardService.teamDetails[i].teams) {
+      this.draftBoardService.teamDetails[i].teams?.push(player.team.toLowerCase());
+    }
+    else {
+      this.draftBoardService.teamDetails[i].teams = [player.team.toLowerCase()];
+    }
     switch(player.position.toLowerCase()) {
       case 'qb':
         if (this.draftBoardService.teamDetails[i].qbList) {
