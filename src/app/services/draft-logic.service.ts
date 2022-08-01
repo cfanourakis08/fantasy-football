@@ -17,18 +17,13 @@ export class DraftLogicService {
 
   private teamName = 'Fani Packers'
   private teamCount = 0;
-  qbStarterMax = 1;
-  rbStarterMax = 3;
-  wrStarterMax = 3;
-  teStarterMax = 1;
-  flexStarterMax = 5;
-  dstStarterMax = 1;
-  kStarterMax = 1;
-  qbBenchMax = 2;
-  rbBenchMax = 6;
-  wrBenchMax = 6;
-  teBenchMax = 2;
-  flexBenchMax = 10;
+  qbMax = 1;
+  rbMax = 3;
+  wrMax = 3;
+  teMax = 1;
+  flexMax = 5;
+  dstMax = 1;
+  kMax = 1;
 
   bestPlayer: Player | undefined = {} as Player;
   qbList: Array<Player> = [];
@@ -89,26 +84,28 @@ export class DraftLogicService {
     let index = this.getTeamIndex();
     let nextDraftPick = this.getMyNextPick(currentPick, index);
     this.teamCount = this.draftBoard.teamDetails.length;
-    let eligiblePlayers = this.getPlayersByAdp(nextDraftPick + this.teamCount);
+    let eligiblePlayers = this.getPlayersByAdp(nextDraftPick, this.teamCount, currentPick);
     this.filterPlayersByPosition(eligiblePlayers)
   }
 
   private calcVORByPosition(round: number): void {
     this.sortPositions(round);
-    if (round <= 7) {
-      this.calculateStarterVOR(round);
-    }
-    else {
-      this.calculateBenchVOR(round);
-    }
+    this.calculateVOR(round);
   }
 
   private findBestPlayer(round: number): Player | undefined {
-    if (round <= 7) {
-      return this.findBestStarter().sort(this.adpSort)[0];
+    if (round <= 7 || this.teamTotalPlayers()) {
+      return this.findBestStarter().sort(this.vorSort)[0];
     }
     
-    return this.findBestBencher().sort(this.adpSort)[0];
+    return this.findBestBencher().sort(this.vorSort)[0];
+  }
+
+  private teamTotalPlayers(): boolean {
+    let teamIndex = this.getTeamIndex();
+    let totalPicks = this.draftBoard.draftBoard.length / this.draftBoard.teamDetails.length;
+    let remainingPicks = this.draftBoard.teamDetails[teamIndex].picks.length;
+    return totalPicks - remainingPicks == 7;
   }
 
   private getTeamIndex(): number {
@@ -135,10 +132,16 @@ export class DraftLogicService {
     return this.draftBoard.teamDetails[index].picks[currentIndex]
   }
 
-  private getPlayersByAdp(adp: number): Array<Player> {
-    return this.availablePlayerDataList.filter(player => {
-      return player.adp < adp
+  private getPlayersByAdp(nextAdp: number, teamCount: number, currentPick: number): Array<Player> {
+    let filteredList =  this.availablePlayerDataList.filter(player => {
+      return player.adp < nextAdp;
     })
+
+    if (filteredList.length < (nextAdp - currentPick)) {
+      return this.availablePlayerDataList.sort(this.adpSort).slice(0, nextAdp - currentPick);
+    }
+
+    return filteredList;
   }
 
   private filterPlayersByPosition(players: Array<Player>): void {
@@ -200,7 +203,17 @@ export class DraftLogicService {
     return 0;
   }
 
-  adpSort(a: any, b: any) {
+  private adpSort(a: any, b: any) {
+    if ( a.adp > b.adp ){
+      return 1;
+    }
+    if ( a.adp < b.adp ){
+      return -1;
+    }
+    return 0;
+  }
+
+  vorSort(a: any, b: any) {
     if ( a.vor < b.vor ){
       return 1;
     }
@@ -210,58 +223,37 @@ export class DraftLogicService {
     return 0;
   }
 
-  // TODO - Need to refine this to handle for top at position not meeting the team correlation criteria.
-  private calculateStarterVOR(round: number) {
+  private calculateVOR(round: number): void {
+    let teamIndex = this.getTeamIndex();
+    let team = this.draftBoard.teamDetails[teamIndex];
     if (this.qbList.length > 0) {
-      this.qbList = this.findVORRate(round, this.qbList);
+      this.qbList = this.findVORRate(round, this.qbList, team.qbList?.length ?? 0);
     }
     if (this.rbList.length > 0) {
-      this.rbList = this.findVORRate(round, this.rbList);
+      this.rbList = this.findVORRate(round, this.rbList, team.rbList?.length ?? 0);
     }
     if (this.wrList.length > 0) {
-      this.wrList = this.findVORRate(round, this.wrList);
+      this.wrList = this.findVORRate(round, this.wrList, team.wrList?.length ?? 0);
     }
     if (this.teList.length > 0) {
-      this.teList = this.findVORRate(round, this.teList);
+      this.teList = this.findVORRate(round, this.teList, team.teList?.length ?? 0);
     }
     if (this.dstList.length > 0) {
-      this.dstList = this.findVORRate(round, this.dstList);
+      this.dstList = this.findVORRate(round, this.dstList, team.dstList?.length ?? 0);
     }
     if (this.kList.length > 0) {
-      this.kList = this.findVORRate(round, this.kList);
+      this.kList = this.findVORRate(round, this.kList, team.kList?.length ?? 0);
     }
   }
 
-  private calculateBenchVOR(round: number) {
-    if (this.qbList.length > 0) {
-      this.qbList = this.findVORRate(round, this.qbList);
-    }
-    if (this.rbList.length > 0) {
-      this.rbList = this.findVORRate(round, this.rbList);
-    }
-    if (this.wrList.length > 0) {
-      this.wrList = this.findVORRate(round, this.wrList);
-    }
-    if (this.teList.length > 0) {
-      this.teList = this.findVORRate(round, this.teList);
-    }
-    if (this.dstList.length > 0) {
-      this.dstList = this.findVORRate(1, this.dstList);
-    }
-    if (this.kList.length > 0) {
-      this.kList = this.findVORRate(1, this.kList);
-    }
-  }
-
-  private findVORRate(round: number, playerList: Array<Player>): Array<Player> {
-    
+  private findVORRate(round: number, playerList: Array<Player>, teamPositionSize: number = 0): Array<Player> {
     playerList.forEach(player => {
-      if (round <= 7) {
-        const baseline = playerList[playerList.length -1].starterValue;
+      if (round <= 7 || teamPositionSize == 0) {
+        const baseline = playerList[playerList.length - 1].starterValue;
         return player.vor = player.starterValue / baseline;
       }
       else {
-        const baseline = playerList[playerList.length -1].benchValue;
+        const baseline = playerList[playerList.length - 1].benchValue;
         return player.vor = player.benchValue / baseline;
       }
       
@@ -270,7 +262,7 @@ export class DraftLogicService {
     return playerList;
   }
 
-  private findBestStarter(): Array<Player | undefined> {
+  private buildPositionObject(): any {
     let index = this.getTeamIndex();
 
     const currentQb = this.draftBoard.teamDetails[index].qbList?.length ?? 0;
@@ -279,8 +271,7 @@ export class DraftLogicService {
     const currentTe = this.draftBoard.teamDetails[index].teList?.length ?? 0;
     const currentFlex = currentRb + currentWr
 
-    let positionArray: Array<Player | undefined> = [];
-    let obj = {
+    return {
       qb: {
         size: currentQb,
         players: this.qbList
@@ -301,11 +292,16 @@ export class DraftLogicService {
         size: currentFlex
       }
     }
+  }
 
-    if (obj.qb.size < this.qbStarterMax) positionArray.push(this.teamCorrelationHandler(this.qbList));
-    if (obj.rb.size < this.rbStarterMax && obj.flex.size < this.flexStarterMax) positionArray.push(this.teamCorrelationHandler(this.rbList));
-    if (obj.wr.size < this.wrStarterMax && obj.flex.size < this.flexStarterMax) positionArray.push(this.teamCorrelationHandler(this.wrList));
-    if (obj.te.size < this.teStarterMax) positionArray.push(this.teamCorrelationHandler(this.teList));
+  private findBestStarter(): Array<Player | undefined> {
+    let obj = this.buildPositionObject()
+    let positionArray: Array<Player | undefined> = [];
+
+    if (obj.qb.size < this.qbMax) positionArray.push(this.teamCorrelationHandler(this.qbList));
+    if (obj.rb.size < this.rbMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.rbList));
+    if (obj.wr.size < this.wrMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.wrList));
+    if (obj.te.size < this.teMax) positionArray.push(this.teamCorrelationHandler(this.teList));
 
     return positionArray
   }
@@ -316,7 +312,6 @@ export class DraftLogicService {
     if (!usedTeams) {
       return players[0];
     }
-    console.log(usedTeams);
 
     for (let i = 0; i < players.length; i++) {
       if (!usedTeams.includes(players[i].team.toLowerCase())) {
@@ -328,55 +323,29 @@ export class DraftLogicService {
   }
 
   private findBestBencher(): Array<Player> {
-    let index = this.getTeamIndex();
-
-    const currentQb = this.draftBoard.teamDetails[index].qbList?.length ?? 0;
-    const currentRb = this.draftBoard.teamDetails[index].rbList?.length ?? 0;
-    const currentWr = this.draftBoard.teamDetails[index].wrList?.length ?? 0;
-    const currentTe = this.draftBoard.teamDetails[index].teList?.length ?? 0;
-    const currentFlex = currentRb + currentWr
-    const currentDst = this.draftBoard.teamDetails[index].dstList?.length ?? 0;
-    const currentK = this.draftBoard.teamDetails[index].kList?.length ?? 0;
-
+    let obj = this.buildPositionObject()
     let positionArray: Array<Player> = [];
-    let obj = {
-      qb: {
-        size: currentQb,
-        players: this.qbList
-      },
-      rb: {
-        size: currentRb,
-        players: this.rbList
-      },
-      wr: {
-        size: currentWr,
-        players: this.wrList
-      },
-      te: {
-        size: currentTe,
-        players: this.teList
-      },
-      flex: {
-        size: currentFlex
-      },
-      dst: {
-        size: currentDst,
-        players: this.dstList
-      },
-      k: {
-        size: currentK,
-        players: this.kList
-      }
-    }
 
-    if (obj.qb.size < this.qbBenchMax) positionArray.push(this.qbList[0]);
-    if (obj.rb.size < this.rbBenchMax && obj.flex.size < this.flexBenchMax) positionArray.push(this.rbList[0]);
-    if (obj.wr.size < this.wrBenchMax && obj.flex.size < this.flexBenchMax) positionArray.push(this.wrList[0]);
-    if (obj.te.size < this.teBenchMax) positionArray.push(this.teList[0]);
-    if (obj.dst.size < this.dstStarterMax) positionArray.push(this.dstList[0]);
-    if (obj.k.size < this.kStarterMax) positionArray.push(this.kList[0]);
+    this.setBenchMaxes();
+
+    if ((obj.qb?.size ?? 0) < this.qbMax) positionArray.push(this.qbList[0]);
+    if ((obj.rb?.size ?? 0) < this.rbMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.rbList[0]);
+    if ((obj.wr?.size ?? 0) < this.wrMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.wrList[0]);
+    if ((obj.te?.size ?? 0) < this.teMax) positionArray.push(this.teList[0]);
+    if ((obj.dst?.size ?? 0) < this.dstMax) positionArray.push(this.dstList[0]);
+    if ((obj.k?.size ?? 0) < this.kMax) positionArray.push(this.kList[0]);
 
     return positionArray
+  }
+
+  private setBenchMaxes(): void {
+    this.qbMax = 2;
+    this.rbMax = 6;
+    this.wrMax = 6;
+    this.teMax = 2;
+    this.dstMax = 1;
+    this.kMax = 1;
+    this.flexMax = 10;
   }
 
 }
