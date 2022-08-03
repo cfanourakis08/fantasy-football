@@ -1,3 +1,4 @@
+<br>
 <form [formGroup]="form">
     <div>
         <label for="round-count">Number of Rounds: </label>
@@ -19,12 +20,14 @@
             <option value="10">10</option>
         </select>
     </div>
+    <br>
     <button type="button" (click)="onBuildList()">Calculate</button>
     <div *ngIf="calculate">
         <div *ngFor="let team of teamCountArray; let i = index">
-            <label>Pick #{{i + 1}}: </label>
-            <input id="team-{{i + 1}}" type="text" placeholder="team{{i + 1}}">
+            <br>
+            <input id="team-{{i + 1}}" type="text" placeholder="Pick {{i + 1}}">
         </div>
+        <br>
         <button type="submit" (click)="createDraft()">Start Draft</button>
     </div>
 </form>
