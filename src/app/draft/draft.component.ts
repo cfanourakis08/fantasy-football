@@ -47,6 +47,7 @@ export class DraftComponent implements OnInit {
     this.updatePickHeader()
     const round = Math.ceil(this.currentPick / this.draftBoardService.teamDetails.length);
     this.draft.calculateBestChoice(this.currentPick, round)
+    this.resetPlayerSelect();
   }
 
   private getPlayerObject(): Player {
@@ -126,6 +127,11 @@ export class DraftComponent implements OnInit {
   private updatePickHeader(): void {
     this.currentTeam = this.getCurrentTeam(this.currentPick);
     this.incrementPick();
+  }
+
+  private resetPlayerSelect(): void {
+    const element = document.getElementById('player') as HTMLInputElement;
+    element.value = '';
   }
 
   navigateTab(id: string): void {

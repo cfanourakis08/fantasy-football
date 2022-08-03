@@ -4,6 +4,7 @@
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -11,15 +12,17 @@
         <tr *ngFor="let row of [draft.qbList[0], draft.rbList[0], draft.wrList[0], draft.teList[0], draft.dstList[0], draft.kList[0]].sort(draft.vorSort)">
             <td>{{row?.name}}</td>
             <td>{{row?.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row?.vor}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.qbList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -27,15 +30,17 @@
         <tr *ngFor="let row of draft.qbList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ??  (row.starterValue / draft.qbList[draft.qbList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.rbList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -43,15 +48,17 @@
         <tr *ngFor="let row of draft.rbList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ?? (row.starterValue / draft.rbList[draft.rbList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.wrList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -59,15 +66,17 @@
         <tr *ngFor="let row of draft.wrList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ?? (row.starterValue / draft.wrList[draft.wrList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.teList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -75,15 +84,17 @@
         <tr *ngFor="let row of draft.teList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ?? (row.starterValue / draft.teList[draft.teList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.dstList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -91,15 +102,17 @@
         <tr *ngFor="let row of draft.dstList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ?? (row.starterValue / draft.dstList[draft.dstList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>
 </table>
-<table class="table table-sm table-striped">
+<table *ngIf="draft.kList.length > 0" class="table table-sm table-striped">
     <thead>
         <tr>
             <td>Player</td>
             <td>Position</td>
+            <td>Team</td>
             <td>VOR</td>
         </tr>
     </thead>
@@ -107,6 +120,7 @@
         <tr *ngFor="let row of draft.kList">
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
+            <td>{{row?.team}}</td>
             <td>{{row.vor ?? (row.starterValue / draft.kList[draft.kList.length - 1].starterValue).toFixed(2)}}</td>
         </tr>
     </tbody>

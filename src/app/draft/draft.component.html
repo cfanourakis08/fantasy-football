@@ -1,23 +1,24 @@
 <div class="container">
     <div [ngClass]="{'green-background': currentTeam == 'Fani Packers'}" class="row">
         <div class="col-2">
-            <h1>ROUND: <span style="font-weight: bold">{{getRound()}}</span></h1>
-            <h1>PICK: <span style="font-weight: bold">{{currentPick}}</span></h1>
+            <h2>ROUND: <span style="font-weight: bold">{{getRound()}}</span></h2>
+            <h2>PICK: <span style="font-weight: bold">{{currentPick}}</span></h2>
         </div>
-        <div id="on-the-clock" class="col-6">
-            <h1>ON THE CLOCK: <span style="font-weight: bold">{{currentTeam}}</span></h1>
+        <div id="on-the-clock" class="col-7">
+            <h1>ON THE CLOCK:</h1>
+            <h1><span style="font-weight: bold">{{currentTeam}}</span></h1>
         </div>
-        <div class="col-2">
+        <div class="col-1">
             <div class="container">
               <button type="submit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">SELECT PLAYER</button>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-2">
+        <div class="col-3">
             <app-team-breakdown></app-team-breakdown>
         </div>
-        <div class="col-10">
+        <div class="col-9">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                   <a id="draft-board" class="nav-link active" aria-current="page" href="javascript:void(0)" (click)="navigateTab('draft-board')">Draft Board</a>
@@ -44,9 +45,11 @@
             </div>
             <form [formGroup]="form">
                 <div class="modal-body">
-                    <select formControlName="playerName">
-                        <option *ngFor="let player of draft.availablePlayerDataList">{{player.name}}</option>
-                    </select>
+                    <label for="player">Select Player: <i></i></label>
+                    <input list="players" name="player" id="player" formControlName="playerName" value="">
+                    <datalist id="players">
+                        <option *ngFor="let player of draft.availablePlayerDataList" value="{{player.name}}">{{player.name}} | {{player.position}} | {{player.team}}</option>
+                    </datalist>
                 </div>
             </form>
             <div class="modal-footer">

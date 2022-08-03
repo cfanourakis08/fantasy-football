@@ -1,6 +1,6 @@
 <form [formGroup]="form">
     <select formControlName="team" (change)="getTeamIndex()">
-        <option *ngFor="let team of getTeamList()" value="{{team.name}}">{{team.name}}</option>
+        <option *ngFor="let team of getTeamList(); let i = index" value="{{team.name}}" [selected]="i == 0">{{team.name}}</option>
     </select>
 </form>
 <p>QB: {{draftBoardService.teamDetails[index].qbList?.length ?? 0}}/2</p>
