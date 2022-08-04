@@ -11,8 +11,8 @@ import { DraftLogicService } from '../services/draft-logic.service';
 })
 export class DraftComponent implements OnInit {
 
-  currentPick: number = 1;
-  currentTeam: string = this.draftBoardService.draftBoard[0].teamName;
+  private _currentPick: number = 1;
+  private _currentTeam: string = this.draftBoardService.draftBoard[0].teamName;
   showDraftBoard: boolean = true;
   showAvailablePlayers: boolean = false;
   showMyBestChoices: boolean = false;
@@ -185,4 +185,21 @@ export class DraftComponent implements OnInit {
     return this.form.controls['playerName'].value
   }
 
+  get currentPick() {
+    return this._currentPick;
+  }
+
+  set currentPick(value: number) {
+    this._currentPick = value;
+    localStorage.setItem('currentPick', value.toString());
+  }
+
+  get currentTeam() {
+    return this._currentTeam;
+  }
+
+  set currentTeam(value: string) {
+    this._currentTeam = value;
+    localStorage.setItem('currentTeam', value);
+  }
 }

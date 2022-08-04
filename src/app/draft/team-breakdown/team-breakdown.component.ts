@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Player } from 'src/app/models/player.model';
 import { Team } from 'src/app/models/team.model';
 import { DraftBoardService } from 'src/app/services/draft-board.service';
 
@@ -19,7 +18,7 @@ export class TeamBreakdownComponent implements OnInit {
   constructor(public draftBoardService: DraftBoardService,
               private fb: FormBuilder) { 
                 this.form = this.fb.group({
-                  team: ['', [Validators.required]]
+                  team: ['Fani Packers', [Validators.required]]
                 })
               }
 
