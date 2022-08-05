@@ -39,7 +39,11 @@ export class ExcelService {
   private createPlayerList(): Array<Player> {
     let playerDataList: Array<Player> = [];
     this.rawPlayerData.forEach(player => {
-      playerDataList.push(this.createPlayer(player));
+      console.log(player)
+      if (player[13] != 'NA') {
+        playerDataList.push(this.createPlayer(player));
+      }
+      
     })
 
     return playerDataList;

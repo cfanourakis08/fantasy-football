@@ -34,6 +34,8 @@ export class DraftBoardService {
     this._draftBoard[i].playerTeam = player.team;
     this._draftBoard[i].position = player.position;
     this._draftBoard[i].teamName = userName;
+
+    localStorage.setItem('draftBoard', JSON.stringify(this._draftBoard));
   }
 
   private extractTeamInfo(user: Team, pick: number): DraftPick {
@@ -45,5 +47,9 @@ export class DraftBoardService {
 
   get draftBoard(): Array<DraftPick> {
     return this._draftBoard;
+  }
+
+  set draftBoard(value: any) {
+    this._draftBoard = value;
   }
 }

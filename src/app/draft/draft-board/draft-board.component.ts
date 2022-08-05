@@ -17,4 +17,6 @@ export class DraftBoardComponent implements OnInit {
     this.draftBoard = this.service.draftBoard;
   }
 
+  
+
 }

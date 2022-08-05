@@ -27,10 +27,34 @@
                 <li class="nav-item">
                   <a id="best-choices" class="nav-link" href="javascript:void(0)" (click)="navigateTab('best-choices')">My Best Choices</a>
                 </li>
+                <li class="nav-item">
+                  <a id="qb" class="nav-link" href="javascript:void(0)" (click)="navigateTab('qb')">QB</a>
+                </li>
+                <li class="nav-item">
+                  <a id="rb" class="nav-link" href="javascript:void(0)" (click)="navigateTab('rb')">RB</a>
+                </li>
+                <li class="nav-item">
+                  <a id="wr" class="nav-link" href="javascript:void(0)" (click)="navigateTab('wr')">WR</a>
+                </li>
+                <li class="nav-item">
+                  <a id="te" class="nav-link" href="javascript:void(0)" (click)="navigateTab('te')">TE</a>
+                </li>
+                <li class="nav-item">
+                  <a id="dst" class="nav-link" href="javascript:void(0)" (click)="navigateTab('dst')">DST</a>
+                </li>
+                <li class="nav-item">
+                  <a id="k" class="nav-link" href="javascript:void(0)" (click)="navigateTab('k')">K</a>
+                </li>
               </ul>
             <app-draft-board *ngIf="showDraftBoard"></app-draft-board>
             <app-available-players *ngIf="showAvailablePlayers"></app-available-players>
             <app-best-choices *ngIf="showMyBestChoices"></app-best-choices>
+            <app-available-qbs *ngIf="showQb"></app-available-qbs>
+            <app-available-rbs *ngIf="showRb"></app-available-rbs>
+            <app-available-wrs *ngIf="showWr"></app-available-wrs>
+            <app-available-tes *ngIf="showTe"></app-available-tes>
+            <app-available-dsts *ngIf="showDst"></app-available-dsts>
+            <app-available-ks *ngIf="showK"></app-available-ks>
         </div>
     </div>
     <!-- Modal -->

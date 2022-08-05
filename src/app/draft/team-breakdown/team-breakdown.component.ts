@@ -22,10 +22,10 @@ export class TeamBreakdownComponent implements OnInit {
                 })
               }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   getTeamList(): Array<Team> {
+    console.log(this.draftBoardService.teamDetails);
     return this.draftBoardService.teamDetails
   }
 

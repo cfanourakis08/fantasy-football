@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AvailablePlayersComponent } from './draft/available-players/available-players.component';
+import { DraftBoardComponent } from './draft/draft-board/draft-board.component';
 import { Player } from './models/player.model';
+import { Team } from './models/team.model';
+import { DraftBoardService } from './services/draft-board.service';
 import { DraftLogicService } from './services/draft-logic.service';
 import { ExcelService } from './services/excel.service';
 
@@ -14,12 +17,41 @@ export class AppComponent {
 
   constructor(private excelService: ExcelService,
               private draft: DraftLogicService,
+              private draftBoard: DraftBoardService,
               private route: Router) { }
 
   async ngOnInit() {
-    this.draft.availablePlayerDataList = await this.excelService.getFileContents();
-    this.createPositionList();
-    this.route.navigate(['pre-draft']);
+    if (localStorage.getItem('currentPick')) {
+      this.pullFromLocalStorage();
+      this.createPositionList();
+      this.route.navigate(['draft']);
+    }
+    else {
+      this.draft.availablePlayerDataList = await this.excelService.getFileContents();
+      this.createPositionList();
+      this.route.navigate(['pre-draft']);
+    }
+  }
+
+  private pullFromLocalStorage() {
+    let availablePlayersList = localStorage.getItem('availablePlayers');
+    if (availablePlayersList) {
+      this.draft.availablePlayerDataList = JSON.parse(availablePlayersList);
+      this.draft.availablePlayerDataList.sort(this.draft.adpSort);
+    }
+
+    let localDraftBoard = localStorage.getItem('draftBoard');
+    if (localDraftBoard) {
+      this.draftBoard.draftBoard = JSON.parse(localDraftBoard);
+    }
+
+    let teamDetails = localStorage.getItem('teamDetails');
+    if (teamDetails) {
+      let a = teamDetails.slice(0, -1);
+      let b = `[${a}]`
+      console.log(JSON.parse(b));
+      this.draftBoard.teamDetails = JSON.parse(b) as Array<Team>;
+    }
   }
 
   private createPositionList() {

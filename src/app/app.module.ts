@@ -11,6 +11,12 @@ import { DraftBoardComponent } from './draft/draft-board/draft-board.component';
 import { AvailablePlayersComponent } from './draft/available-players/available-players.component';
 import { TeamBreakdownComponent } from './draft/team-breakdown/team-breakdown.component';
 import { BestChoicesComponent } from './draft/best-choices/best-choices.component';
+import { AvailableQbsComponent } from './draft/available-qbs/available-qbs.component';
+import { AvailableRbsComponent } from './draft/available-rbs/available-rbs.component';
+import { AvailableWrsComponent } from './draft/available-wrs/available-wrs.component';
+import { AvailableTesComponent } from './draft/available-tes/available-tes.component';
+import { AvailableDstsComponent } from './draft/available-dsts/available-dsts.component';
+import { AvailableKsComponent } from './draft/available-ks/available-ks.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +26,13 @@ import { BestChoicesComponent } from './draft/best-choices/best-choices.componen
     DraftBoardComponent,
     AvailablePlayersComponent,
     TeamBreakdownComponent,
-    BestChoicesComponent
+    BestChoicesComponent,
+    AvailableQbsComponent,
+    AvailableRbsComponent,
+    AvailableWrsComponent,
+    AvailableTesComponent,
+    AvailableDstsComponent,
+    AvailableKsComponent
   ],
   imports: [
     BrowserModule,

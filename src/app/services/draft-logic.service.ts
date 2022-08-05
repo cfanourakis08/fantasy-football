@@ -18,8 +18,8 @@ export class DraftLogicService {
   private teamName = 'Fani Packers'
   private teamCount = 0;
   qbMax = 1;
-  rbMax = 3;
-  wrMax = 3;
+  rbMax = 2;
+  wrMax = 1;
   teMax = 1;
   flexMax = 5;
   dstMax = 1;
@@ -32,7 +32,7 @@ export class DraftLogicService {
   teList: Array<Player> = [];
   dstList: Array<Player> = [];
   kList: Array<Player> = [];
-  
+
   constructor(private draftBoard: DraftBoardService) { }
 
   removePlayer(removedPlayer: Player): void {
@@ -40,6 +40,7 @@ export class DraftLogicService {
       return player.id == removedPlayer.id;
     });
     this.availablePlayerDataList.splice(playerIndex, 1);
+    localStorage.setItem('availablePlayers', JSON.stringify(this.availablePlayerDataList))
 
     this.removePlayerFromPositionList(removedPlayer);
   }
@@ -65,6 +66,13 @@ export class DraftLogicService {
         this.splicePlayer(removedPlayer, this.kPlayerDataList);
         break;
     }
+
+    localStorage.setItem('qbList', JSON.stringify(this.qbPlayerDataList));
+    localStorage.setItem('rbList', JSON.stringify(this.rbPlayerDataList));
+    localStorage.setItem('wrList', JSON.stringify(this.wrPlayerDataList));
+    localStorage.setItem('teList', JSON.stringify(this.tePlayerDataList));
+    localStorage.setItem('dstList', JSON.stringify(this.dstPlayerDataList));
+    localStorage.setItem('kList', JSON.stringify(this.kPlayerDataList));
   }
 
   private splicePlayer(removedPlayer: Player, positionList: Array<Player>): void {
@@ -95,9 +103,9 @@ export class DraftLogicService {
 
   private findBestPlayer(round: number): Player | undefined {
     if (round <= 7 || this.teamTotalPlayers()) {
-      return this.findBestStarter().sort(this.vorSort)[0];
+      return this.findBestStarter(round).sort(this.vorSort)[0];
     }
-    
+
     return this.findBestBencher().sort(this.vorSort)[0];
   }
 
@@ -133,7 +141,7 @@ export class DraftLogicService {
   }
 
   private getPlayersByAdp(nextAdp: number, teamCount: number, currentPick: number): Array<Player> {
-    let filteredList =  this.availablePlayerDataList.filter(player => {
+    let filteredList = this.availablePlayerDataList.filter(player => {
       return player.adp < nextAdp;
     })
 
@@ -184,40 +192,40 @@ export class DraftLogicService {
   }
 
   private starterSort(a: any, b: any) {
-    if ( a.starterValue < b.starterValue ){
+    if (a.starterValue < b.starterValue) {
       return 1;
     }
-    if ( a.starterValue > b.starterValue ){
+    if (a.starterValue > b.starterValue) {
       return -1;
     }
     return 0;
   }
 
   private benchSort(a: any, b: any) {
-    if ( a.benchValue < b.benchValue ){
+    if (a.benchValue < b.benchValue) {
       return 1;
     }
-    if ( a.benchValue > b.benchValue ){
-      return -1;
-    }
-    return 0;
-  }
-
-  private adpSort(a: any, b: any) {
-    if ( a.adp > b.adp ){
-      return 1;
-    }
-    if ( a.adp < b.adp ){
+    if (a.benchValue > b.benchValue) {
       return -1;
     }
     return 0;
   }
 
   vorSort(a: any, b: any) {
-    if ( a.vor < b.vor ){
+    if (a.vor < b.vor) {
       return 1;
     }
-    if ( a.vor > b.vor ){
+    if (a.vor > b.vor) {
+      return -1;
+    }
+    return 0;
+  }
+
+  adpSort(a: any, b: any) {
+    if ( a.adp > b.adp ){
+      return 1;
+    }
+    if ( a.adp < b.adp ){
       return -1;
     }
     return 0;
@@ -252,7 +260,7 @@ export class DraftLogicService {
     const listIndex = Math.min(playerList.length - 1, nextDraftPick - currentPick + 2)
     playerList.forEach(player => {
       if (round <= 7 || teamPositionSize == 0) {
-        
+
         const baseline = playerList[listIndex].starterValue;
         return player.vor = player.starterValue / baseline;
       }
@@ -260,7 +268,7 @@ export class DraftLogicService {
         const baseline = playerList[listIndex].benchValue;
         return player.vor = player.benchValue / baseline;
       }
-      
+
     });
 
     return playerList;
@@ -298,14 +306,18 @@ export class DraftLogicService {
     }
   }
 
-  private findBestStarter(): Array<Player | undefined> {
+  private findBestStarter(round: number): Array<Player | undefined> {
     let obj = this.buildPositionObject()
     let positionArray: Array<Player | undefined> = [];
 
-    if (obj.qb.size < this.qbMax) positionArray.push(this.teamCorrelationHandler(this.qbList));
     if (obj.rb.size < this.rbMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.rbList));
     if (obj.wr.size < this.wrMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.wrList));
-    if (obj.te.size < this.teMax) positionArray.push(this.teamCorrelationHandler(this.teList));
+    if (round > 3) {
+      this.wrMax = 3;
+      this.rbMax = 3;
+      if (obj.qb.size < this.qbMax) positionArray.push(this.teamCorrelationHandler(this.qbList));
+      if (obj.te.size < this.teMax) positionArray.push(this.teamCorrelationHandler(this.teList));
+    }
 
     return positionArray
   }

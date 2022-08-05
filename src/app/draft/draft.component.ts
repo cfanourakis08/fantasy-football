@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Player } from '../models/player.model';
+import { Team } from '../models/team.model';
 import { DraftBoardService } from '../services/draft-board.service';
 import { DraftLogicService } from '../services/draft-logic.service';
 
@@ -16,6 +17,12 @@ export class DraftComponent implements OnInit {
   showDraftBoard: boolean = true;
   showAvailablePlayers: boolean = false;
   showMyBestChoices: boolean = false;
+  showQb: boolean = false;
+  showRb: boolean = false;
+  showWr: boolean = false;
+  showTe: boolean = false;
+  showDst: boolean = false;
+  showK: boolean = false;
   showModal: boolean = false;
 
   form = new FormGroup({
@@ -31,8 +38,21 @@ export class DraftComponent implements OnInit {
               }
 
   ngOnInit(): void {
+    this.pullFromLocalStorage();
     const round = Math.ceil(this.currentPick / this.draftBoardService.teamDetails.length)
     this.draft.calculateBestChoice(this.currentPick, round);
+  }
+
+  private pullFromLocalStorage() {
+    let localCurrentPick = localStorage.getItem('currentPick');
+    if (localCurrentPick) {
+      this.currentPick = Number(localCurrentPick);
+    }
+
+    let localCurrentTeam = localStorage.getItem('currentTeam');
+    if (localCurrentTeam) {
+      this.currentTeam = localCurrentTeam;
+    }
   }
 
   getRound(): number {
@@ -122,6 +142,16 @@ export class DraftComponent implements OnInit {
         }
         break;
     }
+    this.localStorageTeamDetails();
+  }
+
+  private localStorageTeamDetails(): void {
+    let teamDetailsString = '';
+    this.draftBoardService.teamDetails.forEach(team => {
+      teamDetailsString += `${JSON.stringify(team)},`
+    });
+    teamDetailsString.slice(0, -1);
+    localStorage.setItem('teamDetails', teamDetailsString);
   }
 
   private updatePickHeader(): void {
@@ -154,21 +184,42 @@ export class DraftComponent implements OnInit {
   }
 
   private changeActiveTab(id: string): void {
+    this.showDraftBoard = false;
+    this.showAvailablePlayers = false;
+    this.showMyBestChoices = false;
+    this.showQb = false;
+    this.showRb = false;
+    this.showWr = false;
+    this.showTe = false;
+    this.showDst = false;
+    this.showK = false;
     switch (id) {
       case 'draft-board':
         this.showDraftBoard = true;
-        this.showAvailablePlayers = false;
-        this.showMyBestChoices = false;
         break;
       case 'remaining-players':
-        this.showDraftBoard = false;
         this.showAvailablePlayers = true;
-        this.showMyBestChoices = false;
         break;
       case 'best-choices':
-        this.showDraftBoard = false;
-        this.showAvailablePlayers = false;
         this.showMyBestChoices = true;
+        break;
+      case 'qb':
+        this.showQb = true;
+        break;
+      case 'rb':
+        this.showRb = true;
+        break;
+      case 'wr':
+        this.showWr = true;
+        break;
+      case 'te':
+        this.showTe = true;
+        break;
+      case 'dst':
+        this.showDst = true;
+        break;
+      case 'k':
+        this.showK = true;
         break;
     }
   }

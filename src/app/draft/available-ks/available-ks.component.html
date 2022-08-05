@@ -1,0 +1,30 @@
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Position</th>
+            <th>Team</th>
+            <th>Starter Value</th>
+            <th>Bench Value</th>
+            <th>ADP</th>
+            <th>Floor</th>
+            <th>Mean</th>
+            <th>Ceiling</th>
+            <th>Risk</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of kList">
+            <td>{{row.name}}</td>
+            <td>{{row.position}}</td>
+            <td>{{row.team}}</td>
+            <td>{{row.starterValue.toFixed(2)}}</td>
+            <td>{{row.benchValue.toFixed(2)}}</td>
+            <td>{{row.adp}}</td>
+            <td>{{row.floor}}</td>
+            <td>{{row.mean}}</td>
+            <td>{{row.ceiling}}</td>
+            <td>{{row.risk}}</td>
+        </tr>
+    </tbody>
+</table>

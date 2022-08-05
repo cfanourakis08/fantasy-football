@@ -9,23 +9,18 @@ import { DraftLogicService } from 'src/app/services/draft-logic.service';
   styleUrls: ['./available-players.component.css']
 })
 export class AvailablePlayersComponent implements OnInit {
-  availablePlayers: Array<Player> = this.draft.availablePlayerDataList.sort(this.adpSort);
+  availablePlayers: Array<Player> = this.draft.availablePlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
               private draft: DraftLogicService) { }
 
   ngOnInit(): void {
-    
-  }
-
-  private adpSort(a: any, b: any) {
-    if ( a.adp > b.adp ){
-      return 1;
+    let availablePlayersList = localStorage.getItem('availablePlayers');
+    if (availablePlayersList) {
+      this.availablePlayers = JSON.parse(availablePlayersList);
+      console.log(this.availablePlayers);
+      this.availablePlayers.sort(this.draft.adpSort);
     }
-    if ( a.adp < b.adp ){
-      return -1;
-    }
-    return 0;
   }
 
 }
