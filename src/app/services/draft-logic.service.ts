@@ -97,7 +97,7 @@ export class DraftLogicService {
   }
 
   private calcVORByPosition(round: number, currentPick: number): void {
-    this.sortPositions(round);
+    // this.sortPositions(round);
     this.calculateVOR(round, currentPick);
   }
 
@@ -106,7 +106,7 @@ export class DraftLogicService {
       return this.findBestStarter(round).sort(this.vorSort)[0];
     }
 
-    return this.findBestBencher().sort(this.vorSort)[0];
+    return this.findBestBencher(round).sort(this.vorSort)[0];
   }
 
   private teamTotalPlayers(): boolean {
@@ -142,11 +142,12 @@ export class DraftLogicService {
 
   private getPlayersByAdp(nextAdp: number, teamCount: number, currentPick: number): Array<Player> {
     let filteredList = this.availablePlayerDataList.filter(player => {
-      return player.adp < nextAdp;
+      // TODO - Do we want to divide by 2?
+      return player.adp < nextAdp + (this.draftBoard.teamDetails.length / 2);
     })
 
     if (filteredList.length < (nextAdp - currentPick)) {
-      return this.availablePlayerDataList.sort(this.adpSort).slice(0, nextAdp - currentPick);
+      return this.availablePlayerDataList.sort(this.adpSort).slice(0, nextAdp - currentPick + this.draftBoard.teamDetails.length);
     }
 
     return filteredList;
@@ -171,24 +172,6 @@ export class DraftLogicService {
     this.kList = players.filter(player => {
       return player.position.toLowerCase() == 'k';
     });
-  }
-
-  private sortPositions(round: number) {
-    type sorterFunction = (a: any, b: any) => number
-    let sorter: sorterFunction
-    if (round <= 7) {
-      sorter = this.starterSort
-    }
-    else {
-      sorter = this.benchSort
-    }
-
-    this.qbList.sort(sorter);
-    this.rbList.sort(sorter);
-    this.wrList.sort(sorter);
-    this.teList.sort(sorter);
-    this.dstList.sort(this.starterSort);
-    this.kList.sort(this.starterSort);
   }
 
   private starterSort(a: any, b: any) {
@@ -235,29 +218,50 @@ export class DraftLogicService {
     let teamIndex = this.getTeamIndex();
     let team = this.draftBoard.teamDetails[teamIndex];
     if (this.qbList.length > 0) {
-      this.qbList = this.findVORRate(currentPick, round, this.qbList, team.qbList?.length ?? 0);
+      this.qbList = this.findVORRate(currentPick, round, this.qbList, this.qbPlayerDataList, team.qbList?.length ?? 0);
     }
     if (this.rbList.length > 0) {
-      this.rbList = this.findVORRate(currentPick, round, this.rbList, team.rbList?.length ?? 0);
+      this.rbList = this.findVORRate(currentPick, round, this.rbList, this.rbPlayerDataList, team.rbList?.length ?? 0);
     }
     if (this.wrList.length > 0) {
-      this.wrList = this.findVORRate(currentPick, round, this.wrList, team.wrList?.length ?? 0);
+      this.wrList = this.findVORRate(currentPick, round, this.wrList, this.wrPlayerDataList, team.wrList?.length ?? 0);
     }
     if (this.teList.length > 0) {
-      this.teList = this.findVORRate(currentPick, round, this.teList, team.teList?.length ?? 0);
+      this.teList = this.findVORRate(currentPick, round, this.teList, this.tePlayerDataList, team.teList?.length ?? 0);
     }
     if (this.dstList.length > 0) {
-      this.dstList = this.findVORRate(currentPick, round, this.dstList, team.dstList?.length ?? 0);
+      this.dstList = this.findVORRate(currentPick, round, this.dstList, this.dstPlayerDataList, team.dstList?.length ?? 0);
     }
     if (this.kList.length > 0) {
-      this.kList = this.findVORRate(currentPick, round, this.kList, team.kList?.length ?? 0);
+      this.kList = this.findVORRate(currentPick, round, this.kList, this.kPlayerDataList, team.kList?.length ?? 0);
     }
   }
 
-  private findVORRate(currentPick: number, round: number, playerList: Array<Player>, teamPositionSize: number = 0): Array<Player> {
+  private findVORRate(currentPick: number, round: number, playerList: Array<Player>, availablePlayerList: Array<Player>, teamPositionSize: number = 0): Array<Player> {
     let index = this.getTeamIndex();
     let nextDraftPick = this.getMyNextPick(currentPick, index);
-    const listIndex = Math.min(playerList.length - 1, nextDraftPick - currentPick + 2)
+    
+    if (teamPositionSize == 0) {
+      playerList.sort(this.starterSort);
+      availablePlayerList.sort(this.starterSort);
+    }
+    else {
+      playerList.sort(this.benchSort);
+      availablePlayerList.sort(this.benchSort);
+    }
+
+    if (playerList.length == 1) {
+      (availablePlayerList[0].id == playerList[0].id) ? playerList.push(availablePlayerList[1]) : playerList.push(availablePlayerList[0]);
+      // TODO - Do we want to divide by 2?
+      ((teamPositionSize == 0 || round <= 7) && playerList[1].adp < (nextDraftPick + (this.draftBoard.teamDetails.length / 2)) ) ? playerList.sort(this.starterSort) : playerList.sort(this.benchSort);
+    }
+    
+    const listIndex = playerList.length - 1
+
+    // TODO - Let's check out a new algorithm option where
+    // For each player,
+    // Calculate the difference between their value and the value of EACH player below them
+    // Grab the sum of the above and divide by the number of players below
     playerList.forEach(player => {
       if (round <= 7 || teamPositionSize == 0) {
 
@@ -268,7 +272,6 @@ export class DraftLogicService {
         const baseline = playerList[listIndex].benchValue;
         return player.vor = player.benchValue / baseline;
       }
-
     });
 
     return playerList;
@@ -338,7 +341,7 @@ export class DraftLogicService {
     return undefined;
   }
 
-  private findBestBencher(): Array<Player | undefined> {
+  private findBestBencher(round: number): Array<Player | undefined> {
     let obj = this.buildPositionObject()
     let positionArray: Array<Player | undefined> = [];
 
@@ -348,8 +351,11 @@ export class DraftLogicService {
     if ((obj.rb?.size ?? 0) < this.rbMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.rbList[0]);
     if ((obj.wr?.size ?? 0) < this.wrMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.wrList[0]);
     if ((obj.te?.size ?? 0) < this.teMax) positionArray.push(this.teList[0]);
-    if ((obj.dst?.size ?? 0) < this.dstMax) positionArray.push(this.teamCorrelationHandler(this.dstList));
-    if ((obj.k?.size ?? 0) < this.kMax) positionArray.push(this.teamCorrelationHandler(this.kList));
+
+    if (round >= 15) {
+      if ((obj.dst?.size ?? 0) < this.dstMax) positionArray.push(this.teamCorrelationHandler(this.dstList));
+      if ((obj.k?.size ?? 0) < this.kMax) positionArray.push(this.teamCorrelationHandler(this.kList));
+    }
 
     return positionArray
   }
