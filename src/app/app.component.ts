@@ -28,6 +28,7 @@ export class AppComponent {
     }
     else {
       this.draft.availablePlayerDataList = await this.excelService.getFileContents();
+      this.draft.availablePlayerDataList.sort(this.draft.adpSort);
       this.createPositionList();
       this.route.navigate(['pre-draft']);
     }

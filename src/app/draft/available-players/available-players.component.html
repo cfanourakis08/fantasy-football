@@ -4,9 +4,9 @@
             <th>Player</th>
             <th>Position</th>
             <th>Team</th>
-            <th>Starter Value</th>
-            <th>Bench Value</th>
-            <th>ADP</th>
+            <th (click)="availablePlayers.sort(draft.starterSort)">Starter Value</th>
+            <th (click)="availablePlayers.sort(draft.benchSort)">Bench Value</th>
+            <th (click)="availablePlayers.sort(draft.adpSort)">ADP</th>
             <th>Floor</th>
             <th>Mean</th>
             <th>Ceiling</th>

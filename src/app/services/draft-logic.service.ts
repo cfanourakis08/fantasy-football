@@ -174,7 +174,7 @@ export class DraftLogicService {
     });
   }
 
-  private starterSort(a: any, b: any) {
+  starterSort(a: any, b: any) {
     if (a.starterValue < b.starterValue) {
       return 1;
     }
@@ -184,7 +184,7 @@ export class DraftLogicService {
     return 0;
   }
 
-  private benchSort(a: any, b: any) {
+  benchSort(a: any, b: any) {
     if (a.benchValue < b.benchValue) {
       return 1;
     }
@@ -241,7 +241,7 @@ export class DraftLogicService {
     let index = this.getTeamIndex();
     let nextDraftPick = this.getMyNextPick(currentPick, index);
     
-    if (teamPositionSize == 0) {
+    if (teamPositionSize == 0 || round <= 7) {
       playerList.sort(this.starterSort);
       availablePlayerList.sort(this.starterSort);
     }
@@ -250,9 +250,13 @@ export class DraftLogicService {
       availablePlayerList.sort(this.benchSort);
     }
 
+    console.log(playerList);
     if (playerList.length == 1) {
+      console.log(availablePlayerList);
       (availablePlayerList[0].id == playerList[0].id) ? playerList.push(availablePlayerList[1]) : playerList.push(availablePlayerList[0]);
       // TODO - Do we want to divide by 2?
+      console.log(playerList[1].adp);
+      console.log(nextDraftPick + (this.draftBoard.teamDetails.length / 2));
       ((teamPositionSize == 0 || round <= 7) && playerList[1].adp < (nextDraftPick + (this.draftBoard.teamDetails.length / 2)) ) ? playerList.sort(this.starterSort) : playerList.sort(this.benchSort);
     }
     
@@ -262,17 +266,35 @@ export class DraftLogicService {
     // For each player,
     // Calculate the difference between their value and the value of EACH player below them
     // Grab the sum of the above and divide by the number of players below
-    playerList.forEach(player => {
-      if (round <= 7 || teamPositionSize == 0) {
+    // playerList.forEach(player => {
+    //   if (round <= 7 || teamPositionSize == 0) {
 
-        const baseline = playerList[listIndex].starterValue;
-        return player.vor = player.starterValue / baseline;
+    //     const baseline = playerList[listIndex].starterValue;
+    //     return player.vor = player.starterValue / baseline;
+    //   }
+    //   else {
+    //     const baseline = playerList[listIndex].benchValue;
+    //     return player.vor = player.benchValue / baseline;
+    //   }
+    // });
+
+    // TODO - Figure out why playerList is not sorted properly
+    console.log(playerList);
+    for (let i = 0; i < playerList.length; i++) {
+      let divider = playerList.length - i - 1;
+      let sum = 0;
+      for (let j = i + 1; j < playerList.length; j++) {
+        (round <= 7 || teamPositionSize == 0) ? sum += playerList[i].starterValue - playerList[j].starterValue : sum += playerList[i].benchValue - playerList[j].benchValue;
+      }
+      if (round <= 7 || teamPositionSize == 0) {
+        playerList[i].vor = playerList[i].starterValue / (playerList[i].starterValue - (sum / divider));
       }
       else {
-        const baseline = playerList[listIndex].benchValue;
-        return player.vor = player.benchValue / baseline;
+        playerList[i].vor = playerList[i].benchValue / (playerList[i].benchValue - (sum / divider));
       }
-    });
+
+      if (Number.isNaN(playerList[i].vor)) playerList[i].vor = 1;
+    }
 
     return playerList;
   }

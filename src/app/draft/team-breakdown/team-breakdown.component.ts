@@ -22,7 +22,9 @@ export class TeamBreakdownComponent implements OnInit {
                 })
               }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.getTeamIndex();
+  }
 
   getTeamList(): Array<Team> {
     return this.draftBoardService.teamDetails
@@ -44,6 +46,10 @@ export class TeamBreakdownComponent implements OnInit {
 
   get team() {
     return this.form.controls['team'].value;
+  }
+
+  set team(val: string) {
+    this.form.controls['team'].setValue
   }
 
 }

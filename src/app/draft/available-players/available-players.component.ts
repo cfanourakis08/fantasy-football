@@ -12,7 +12,7 @@ export class AvailablePlayersComponent implements OnInit {
   availablePlayers: Array<Player> = this.draft.availablePlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availablePlayersList = localStorage.getItem('availablePlayers');
