@@ -1,12 +1,13 @@
 <table class="table table-sm table-striped">
     <thead>
         <tr>
+            <th>Rank</th>
             <th>Player</th>
             <th>Position</th>
             <th>Team</th>
-            <th>Starter Value</th>
-            <th>Bench Value</th>
-            <th>ADP</th>
+            <th (click)="teList.sort(draft.starterSort)">Starter Value</th>
+            <th (click)="teList.sort(draft.benchSort)">Bench Value</th>
+            <th (click)="teList.sort(draft.adpSort)">ADP</th>
             <th>Floor</th>
             <th>Mean</th>
             <th>Ceiling</th>
@@ -14,7 +15,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of teList">
+        <tr *ngFor="let row of teList; let i = index">
+            <td>{{i + 1}}</td>
             <td>{{row.name}}</td>
             <td>{{row.position}}</td>
             <td>{{row.team}}</td>

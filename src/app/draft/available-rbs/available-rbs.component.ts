@@ -13,7 +13,7 @@ export class AvailableRbsComponent implements OnInit {
   rbList: Array<Player> = this.draft.rbPlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableRbList = localStorage.getItem('rbList');

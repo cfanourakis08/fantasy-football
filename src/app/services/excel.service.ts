@@ -33,6 +33,7 @@ export class ExcelService {
       headersIndexObj[header] = i
     }
 
+    console.log(headersIndexObj)
     return headersIndexObj;
   }
 
@@ -46,6 +47,7 @@ export class ExcelService {
       
     })
 
+    console.log(playerDataList);
     return playerDataList;
   }
 
@@ -70,7 +72,10 @@ export class ExcelService {
     let floor = Number(player[this.headersIndexObj['floor']]);
     let risk = Number(player[this.headersIndexObj['risk']]);
 
-    return ((mean + floor) / 2 ) * ((100 - risk) / 100);
+    console.log(mean);
+    console.log(floor);
+    console.log(risk);
+    return ((mean + floor) / 2 ) * ((100 - (risk / 10)) / 100);
   }
 
   private calculateBench(player: any): number {
@@ -78,7 +83,7 @@ export class ExcelService {
     let ceiling = Number(player[this.headersIndexObj['ceiling']]);
     let risk = Number(player[this.headersIndexObj['risk']]);
 
-    return ((mean + ceiling) / 2 ) * ((100 - risk) / 100);
+    return ((mean + ceiling) / 2 ) * ((100 - (risk / 19)) / 100);
   }
 
   private createRawPlayerData(data: Array<string>): Array<Array<any>> {

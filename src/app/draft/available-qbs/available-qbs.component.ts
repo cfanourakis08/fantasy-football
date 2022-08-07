@@ -13,7 +13,7 @@ export class AvailableQbsComponent implements OnInit {
   qbList: Array<Player> = this.draft.qbPlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableQbList = localStorage.getItem('qbList');

@@ -13,7 +13,7 @@ export class AvailableKsComponent implements OnInit {
   kList: Array<Player> = this.draft.kPlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableKList = localStorage.getItem('kList');

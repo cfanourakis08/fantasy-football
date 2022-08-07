@@ -13,7 +13,7 @@ export class AvailableTesComponent implements OnInit {
   teList: Array<Player> = this.draft.tePlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableTeList = localStorage.getItem('teList');

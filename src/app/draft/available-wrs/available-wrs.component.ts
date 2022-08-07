@@ -13,7 +13,7 @@ export class AvailableWrsComponent implements OnInit {
   wrList: Array<Player> = this.draft.wrPlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableTeList = localStorage.getItem('wrList');

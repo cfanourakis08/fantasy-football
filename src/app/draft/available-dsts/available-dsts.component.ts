@@ -13,7 +13,7 @@ export class AvailableDstsComponent implements OnInit {
   dstList: Array<Player> = this.draft.dstPlayerDataList.sort(this.draft.adpSort);
 
   constructor(private appComponent: AppComponent,
-              private draft: DraftLogicService) { }
+              public draft: DraftLogicService) { }
 
   ngOnInit(): void {
     let availableDstList = localStorage.getItem('dstList');
