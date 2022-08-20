@@ -7,7 +7,7 @@ import { lastValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class ExcelService {
-  private appDataCsv = 'assets/fantasy-data.csv';
+  private appDataCsv = 'assets/fantasy-data2.csv';
   private rawPlayerData: Array<any> = [];
   private headersIndexObj: any = {};
 
@@ -70,20 +70,15 @@ export class ExcelService {
   private calculateStarter(player: any): number {
     let mean = Number(player[this.headersIndexObj['mean']]);
     let floor = Number(player[this.headersIndexObj['floor']]);
-    let risk = Number(player[this.headersIndexObj['risk']]);
 
-    console.log(mean);
-    console.log(floor);
-    console.log(risk);
-    return ((mean + floor) / 2 ) * ((100 - (risk / 10)) / 100);
+    return ((mean + floor) / 2);
   }
 
   private calculateBench(player: any): number {
     let mean = Number(player[this.headersIndexObj['mean']]);
     let ceiling = Number(player[this.headersIndexObj['ceiling']]);
-    let risk = Number(player[this.headersIndexObj['risk']]);
 
-    return ((mean + ceiling) / 2 ) * ((100 - (risk / 19)) / 100);
+    return ((mean + ceiling) / 2);
   }
 
   private createRawPlayerData(data: Array<string>): Array<Array<any>> {

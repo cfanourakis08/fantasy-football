@@ -85,7 +85,7 @@ export class DraftLogicService {
   calculateBestChoice(currentPick: number, round: number): void {
     this.getPlayersByPosition(currentPick);
     this.calcVORByPosition(round, currentPick);
-    this.bestPlayer = this.findBestPlayer(round);
+    this.bestPlayer = this.findBestPlayer(round, currentPick);
   }
 
   private getPlayersByPosition(currentPick: number): void {
@@ -97,13 +97,12 @@ export class DraftLogicService {
   }
 
   private calcVORByPosition(round: number, currentPick: number): void {
-    // this.sortPositions(round);
     this.calculateVOR(round, currentPick);
   }
 
-  private findBestPlayer(round: number): Player | undefined {
+  private findBestPlayer(round: number, currentPick: number): Player | undefined {
     if (round <= 7 || this.teamTotalPlayers()) {
-      return this.findBestStarter(round).sort(this.vorSort)[0];
+      return this.findBestStarter(round, currentPick).sort(this.vorSort)[0];
     }
 
     return this.findBestBencher(round).sort(this.vorSort)[0];
@@ -142,8 +141,12 @@ export class DraftLogicService {
 
   private getPlayersByAdp(nextAdp: number, teamCount: number, currentPick: number): Array<Player> {
     let filteredList = this.availablePlayerDataList.filter(player => {
-      // TODO - Do we want to divide by 2?
-      return player.adp < nextAdp + (this.draftBoard.teamDetails.length / 2);
+      if (currentPick <= teamCount * 7 || currentPick > teamCount * 14) {
+        return player.adp < nextAdp + (this.draftBoard.teamDetails.length / 2);
+      }
+      
+      return (player.adp < nextAdp + (this.draftBoard.teamDetails.length / 2)) && player.benchValue > 100;
+      
     })
 
     if (filteredList.length < (nextAdp - currentPick)) {
@@ -250,36 +253,13 @@ export class DraftLogicService {
       availablePlayerList.sort(this.benchSort);
     }
 
-    console.log(playerList);
     if (playerList.length == 1) {
-      console.log(availablePlayerList);
       (availablePlayerList[0].id == playerList[0].id) ? playerList.push(availablePlayerList[1]) : playerList.push(availablePlayerList[0]);
-      // TODO - Do we want to divide by 2?
-      console.log(playerList[1].adp);
-      console.log(nextDraftPick + (this.draftBoard.teamDetails.length / 2));
       ((teamPositionSize == 0 || round <= 7) && playerList[1].adp < (nextDraftPick + (this.draftBoard.teamDetails.length / 2)) ) ? playerList.sort(this.starterSort) : playerList.sort(this.benchSort);
     }
     
     const listIndex = playerList.length - 1
 
-    // TODO - Let's check out a new algorithm option where
-    // For each player,
-    // Calculate the difference between their value and the value of EACH player below them
-    // Grab the sum of the above and divide by the number of players below
-    // playerList.forEach(player => {
-    //   if (round <= 7 || teamPositionSize == 0) {
-
-    //     const baseline = playerList[listIndex].starterValue;
-    //     return player.vor = player.starterValue / baseline;
-    //   }
-    //   else {
-    //     const baseline = playerList[listIndex].benchValue;
-    //     return player.vor = player.benchValue / baseline;
-    //   }
-    // });
-
-    // TODO - Figure out why playerList is not sorted properly
-    console.log(playerList);
     for (let i = 0; i < playerList.length; i++) {
       let divider = playerList.length - i - 1;
       let sum = 0;
@@ -331,27 +311,37 @@ export class DraftLogicService {
     }
   }
 
-  private findBestStarter(round: number): Array<Player | undefined> {
+  private findBestStarter(round: number, currentPick: number): Array<Player | undefined> {
     let obj = this.buildPositionObject()
     let positionArray: Array<Player | undefined> = [];
 
     if (obj.rb.size < this.rbMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.rbList));
-    if (obj.wr.size < this.wrMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.wrList));
+    if (round == 1 && currentPick > 4) {
+      if (obj.wr.size < this.wrMax && obj.flex.size < this.flexMax) positionArray.push(this.teamCorrelationHandler(this.wrList, 'wr'));
+    }
     if (round > 3) {
       this.wrMax = 3;
       this.rbMax = 3;
-      if (obj.qb.size < this.qbMax) positionArray.push(this.teamCorrelationHandler(this.qbList));
+      if (obj.qb.size < this.qbMax) positionArray.push(this.teamCorrelationHandler(this.qbList, 'qb'));
       if (obj.te.size < this.teMax) positionArray.push(this.teamCorrelationHandler(this.teList));
     }
 
     return positionArray
   }
 
-  private teamCorrelationHandler(players: Array<Player>): Player | undefined {
+  private teamCorrelationHandler(players: Array<Player>, position: string = ''): Player | undefined {
     let index = this.getTeamIndex();
     const usedTeams = this.draftBoard.teamDetails[index].teams;
     if (!usedTeams) {
       return players[0];
+    }
+
+    if (position == 'wr') {
+      if (!this.wrNotAllowed(index, players[0])) return players[0]
+    }
+
+    if (position == 'qb') {
+      if (!this.qbNotAllowed(index, players[0])) return players[0]
     }
 
     for (let i = 0; i < players.length; i++) {
@@ -363,15 +353,64 @@ export class DraftLogicService {
     return undefined;
   }
 
+  private wrNotAllowed(index: number, currentPlayer: Player): boolean {
+    const wrsTeams = this.draftBoard.teamDetails[index].wrList
+    const qbsTeams = this.draftBoard.teamDetails[index].qbList
+
+    let playerNotAllowed = true;
+
+    if (wrsTeams != undefined) {
+      const wrOnSameTeam = wrsTeams.filter(player => {
+        return player.team.toLowerCase() == currentPlayer.team.toLowerCase()
+      })
+
+      if (wrOnSameTeam.length != 0) return playerNotAllowed
+    }
+
+    if (qbsTeams != undefined) {
+      const qbOnSameTeam = qbsTeams.filter(player => {
+        return player.team.toLowerCase() == currentPlayer.team.toLowerCase()
+      })
+
+      if (qbOnSameTeam.length == 0) return playerNotAllowed
+
+      playerNotAllowed = false;
+    }
+
+    return playerNotAllowed
+  }
+
+  private qbNotAllowed(index: number, currentPlayer: Player): boolean {
+    console.log(currentPlayer);
+    const wrsTeams = this.draftBoard.teamDetails[index].wrList
+
+    let playerNotAllowed = true;
+    console.log(wrsTeams);
+
+    if (wrsTeams != undefined) {
+      const wrOnSameTeam = wrsTeams.filter(player => {
+        return player.team.toLowerCase() == currentPlayer.team.toLowerCase()
+      })
+
+      console.log(wrOnSameTeam);
+
+      if (wrOnSameTeam.length == 0) return playerNotAllowed
+
+      playerNotAllowed = false;
+    }
+
+    return playerNotAllowed;
+  }
+
   private findBestBencher(round: number): Array<Player | undefined> {
     let obj = this.buildPositionObject()
     let positionArray: Array<Player | undefined> = [];
 
-    this.setBenchMaxes();
+    this.setBenchMaxes(round);
 
     if ((obj.qb?.size ?? 0) < this.qbMax) positionArray.push(this.qbList[0]);
-    if ((obj.rb?.size ?? 0) < this.rbMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.rbList[0]);
-    if ((obj.wr?.size ?? 0) < this.wrMax && (obj.flex?.size ?? 0) < this.flexMax) positionArray.push(this.wrList[0]);
+    if ((obj.rb?.size ?? 0) < this.rbMax && ((obj.flex?.size ?? 0) < this.flexMax) && ((obj.rb?.size ?? 0) - 2 < (obj.wr?.size ?? 0))) positionArray.push(this.rbList[0]);
+    if ((obj.wr?.size ?? 0) < this.wrMax && ((obj.flex?.size ?? 0) < this.flexMax) && ((obj.wr?.size ?? 0) - 2 < (obj.rb?.size ?? 0))) positionArray.push(this.wrList[0]);
     if ((obj.te?.size ?? 0) < this.teMax) positionArray.push(this.teList[0]);
 
     if (round >= 15) {
@@ -382,14 +421,17 @@ export class DraftLogicService {
     return positionArray
   }
 
-  private setBenchMaxes(): void {
-    this.qbMax = 2;
+  private setBenchMaxes(round: number): void {
     this.rbMax = 6;
     this.wrMax = 6;
-    this.teMax = 2;
     this.dstMax = 1;
     this.kMax = 1;
     this.flexMax = 10;
+
+    if (round > 11) {
+      this.qbMax = 2;
+      this.teMax = 2;
+    }
   }
 
 }
